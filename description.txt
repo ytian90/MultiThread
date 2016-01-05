@@ -1,0 +1,56 @@
+The project is the final project for CSC716 Advanced Operating System created by Yu Tian, December 10, 2015.
+
+The aim of the project is to solve the synchronization problems reader and writer, using different techniques, such as semaphore, monitor with conditional variables, hardware instructions (test-and-set), and peterson's algorithm etc. More detailed description of the project requirements can be found in the assignment materials.
+
+The algorithm that I use is based on the reader and writer algorithm we discuss in the class. 
+Writer: exclusively use the file.
+        If one writer is writing the file, no other reader or writer can access the file.
+Reader: shared access to the file with other readers.
+        If one reader is reading the file, other reader can read the file at the same time, but no writer can access the file.
+
+Script: 
+Binary semaphore wrt = 1, semaphore mutex = 1
+Writer:
+    wait(wrt)
+    access the file (open, write, close)
+    signal(wrt)
+
+Reader:
+    int acReaders = 0;
+    wait(mutex)
+    if (acReaders == 1) wait(wrt)
+    signal(mutex)
+    // enter cs
+    wait(mutex)
+    acReaders--
+    if (acReaders == 0) signal(wrt)
+    signal(mutex)
+
+The techniques that I chose in this project is semaphore, monitor with conditional variables and hardware instructions (test-and-set) by implementing with C/C++.
+
+1. Semaphore
+I use C library <semaphore.h> to implement this part of the project.
+The basic demonstration and sample of how to use this libray is in the ex1.c file.
+The project program is in the sem.c file.
+
+2. Monitor with conditional variables
+I use C++14 library <mutex> to implement this part of the project.
+The basic demonstration and sample of how to use this libray is in the ex2.cpp file.
+The project program is in the monitor.cpp file.
+
+3. Test-and-set
+I use C++14 library <atomic> to implement this part of the project.
+The basic demonstration and sample of how to use this libray is in the ex3.cpp file.
+The project program is in the testset.cpp file.
+
+How to compile the problem?
+Save all the codes and files in the same directory, use the Makefile to compile all the codes with typing
+make
+in your terminal.
+Environment: Linux Ubuntu
+
+The problem that I faced during the project:
+1. Trace the process
+How do we know the running situation of so many readers and writers? For me, I tried to print out every step in the process and output the results to make sure that everything is working well.
+2. Problems that still need to be solved
+Since we add new requirements of keeping readers and writers, there is another new problem may happen is that writer may suffer from starvation, this is the problem that I still need to solve.
